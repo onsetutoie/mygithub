@@ -8,10 +8,14 @@
     </settings>
 
     <plugins>
-        <!-- com.github.pagehelper 为 PageHelper 类所在包名 -->
-        <plugin interceptor="com.github.pagehelper.PageHelper">
-            <!-- 设置数据库类型 Oracle,Mysql,MariaDB,SQLite,Hsqldb,PostgreSQL 六种数据库-->
-            <property name="dialect" value="mysql"/>
+<!--       分页5 版本之后使用     -->
+        <plugin interceptor="com.github.pagehelper.PageInterceptor">
+            <property name="helperDialect" value="mysql"/>
+<!--            5版本之前使用下面的-->
+            <!-- com.github.pagehelper 为 PageHelper 类所在包名 -->
+            <!--        <plugin interceptor="com.github.pagehelper.PageHelper">-->
+            <!-- 设置数据库类型 Oracle,Mysql,MariaDB,SQLite,Hsqldb,PostgreSQL 六种数据库
+            <property name="dialect" value="mysql"/>-->
         </plugin>
     </plugins>
 

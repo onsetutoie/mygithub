@@ -15,9 +15,6 @@
     <!--包扫描-->
     <context:component-scan base-package="com.atguigu.controller" />
 
-    <mvc:view-controller path="/" view-name="frame/index"/>
-    <mvc:view-controller path="/main" view-name="frame/main"/>
-
     <!-- 没有匹配上的url全部按默认方式（就是直接访问）访问，避免拦截静态资源 -->
     <mvc:default-servlet-handler/>
     <!-- 开启mvc注解-->

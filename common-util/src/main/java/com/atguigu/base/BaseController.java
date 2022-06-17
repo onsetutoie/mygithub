@@ -1,6 +1,6 @@
 package com.atguigu.base;
 
-import com.github.pagehelper.StringUtil;
+import com.github.pagehelper.util.StringUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
@@ -40,7 +40,7 @@ public class BaseController {
             filters.put("pageNum", 1);
         }
         if(!filters.containsKey("pageSize")) {
-            filters.put("pageSize", 3);
+            filters.put("pageSize", 8);
         }
 
         return filters;
