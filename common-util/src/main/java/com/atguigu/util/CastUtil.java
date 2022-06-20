@@ -1,6 +1,6 @@
 package com.atguigu.util;
 
-import com.github.pagehelper.util.StringUtil;
+import com.github.pagehelper.StringUtil;
 
 /**
  * 转型操作工具类

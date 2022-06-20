@@ -1,6 +1,6 @@
 package com.atguigu.base;
 
-import com.github.pagehelper.util.StringUtil;
+import com.github.pagehelper.StringUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
