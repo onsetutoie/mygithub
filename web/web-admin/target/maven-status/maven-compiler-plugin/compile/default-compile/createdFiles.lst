@@ -1,3 +1,6 @@
+com\atguigu\controller\CommunityController.class
+com\atguigu\controller\DictController.class
+com\atguigu\controller\HouseController.class
 com\atguigu\controller\AdminController.class
 com\atguigu\controller\RoleController.class
 com\atguigu\controller\IndexController.class

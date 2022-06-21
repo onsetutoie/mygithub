@@ -33,6 +33,7 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
         int pageSize = CastUtil.castInt(filters.get("pageSize"), 10);
 
         PageHelper.startPage(pageNum, pageSize);
+
         return new PageInfo<T>(getEntityDao().findPage(filters), 10);
     }
 }
