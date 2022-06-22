@@ -181,7 +181,7 @@
         order by id desc
     </select>
 
-    <select id="findList" resultType="community">
+    <select id="findList" resultMap="Community">
         select <include refid="columns"/>
         from hse_community
         where is_deleted = 0

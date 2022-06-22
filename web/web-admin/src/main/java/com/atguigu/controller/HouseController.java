@@ -4,6 +4,7 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.atguigu.base.BaseController;
 import com.atguigu.entity.*;
 import com.atguigu.service.*;
+import com.atguigu.util.QiniuUtils;
 import com.github.pagehelper.PageInfo;
 
 import org.springframework.stereotype.Controller;
@@ -11,10 +12,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/house")
@@ -24,8 +29,9 @@ public class HouseController extends BaseController {
     private static final String PAGE_INDEX = "house/index";
     private static final String PAGE_CREATE = "house/create";
     private static final String PAGE_EDIT = "house/edit";
-    private static final String LIST_ACTION = "redirect:/house";
+    private static final String LIST_ACTION = "redirect:/house/";
     private static final String PAGE_DETAIL = "house/detail";
+    private static final String PAGE_UPLOADDEFAULT_SHOW = "house/uploadDefault";
 
     @Reference
     HouseService houseService;
@@ -193,6 +199,48 @@ public class HouseController extends BaseController {
 
 
         return PAGE_INDEX;
+    }
+
+
+    // 上传首页图片
+    @RequestMapping("/uploadDefault/{houseId}")
+    public String uploadDefault(@PathVariable("houseId") Long houseId,
+                                @RequestParam("file") MultipartFile file,
+                                HttpServletRequest request) throws IOException {
+
+
+        String imageName = UUID.randomUUID().toString();
+
+        byte[] bytes = file.getBytes();
+        QiniuUtils.upload2Qiniu(bytes, imageName);
+
+        House house = houseService.getById(houseId);
+
+        house.setDefaultImageUrl("http://rdv11vxn9.hn-bkt.clouddn.com/" + imageName);
+
+        houseService.update(house);
+
+        return this.successPage(this.MESSAGE_SUCCESS, request);
+    }
+
+    @RequestMapping("/deleteDefault/{houseId}")
+    public String deleteDefault( @PathVariable("houseId") Long houseId) throws IOException {
+
+        House house = houseService.getById(houseId);
+        String imageName = house.getDefaultImageUrl();
+        house.setDefaultImageUrl(" ");
+        QiniuUtils.deleteFileFromQiniu(imageName);
+        houseService.update(house);
+        return LIST_ACTION + houseId;
+    }
+
+    @RequestMapping("/uploadDefaultShow/{houseId}")
+    public String uploadDefaultShow(@PathVariable("houseId") Long houseId, Model model) {
+
+        model.addAttribute("houseId", houseId);
+
+        return PAGE_UPLOADDEFAULT_SHOW;
+
     }
 
 }

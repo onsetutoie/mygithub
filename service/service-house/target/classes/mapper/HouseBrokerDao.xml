@@ -23,13 +23,11 @@
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         insert into hse_house_broker (
-           id ,
            house_id ,
            broker_id ,
            broker_name ,
            broker_head_url
         ) values (
-           #{id} ,
            #{houseId} ,
            #{brokerId} ,
            #{brokerName} ,

@@ -62,6 +62,21 @@
                             <div class="ibox float-e-margins">
                                 <div class="ibox-title">
                                     <h3>房源图片信息</h3>
+                                    <a class="btn btn-xs btn-primary" id="uploadDefault">上传首页图片</a>
+                                </div>
+                                <div class="ibox-content">
+                                        <img alt="image" th:src="${house.defaultImageUrl}"/>
+                                        <a th:attr="data-id=${house.id}" class="deleteDefaultImage">删除</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="ibox float-e-margins">
+                                <div class="ibox-title">
+                                    <h3>房源图片信息</h3>
                                     <a class="btn btn-xs btn-primary" id="upload1">上传房源图片</a>
                                 </div>
                                 <div class="ibox-content">
@@ -165,5 +180,56 @@
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    $(function(){
+        //图片
+        $("#uploadDefault").on("click",function () {
+            opt.openWin('/house/uploadDefaultShow/[[${house.id}]]','上传首页图片',580,430)
+        });
+        $("#upload1").on("click",function () {
+            opt.openWin('/houseImage/uploadShow/[[${house.id}]]/1','上传房源图片',580,430)
+        });
+        $("#upload2").on("click",function () {
+            opt.openWin('/houseImage/uploadShow/[[${house.id}]]/2','上传房源图片',580,430)
+        });
+        $(".deleteImages").on("click",function(){
+            var id = $(this).attr("data-id");
+            opt.confirm('/houseImage/delete/[[${house.id}]]/'+id);
+        });
+        $(".deleteDefaultImage").on("click",function(){
+            var houseId = $(this).attr("data-id");
+            opt.confirm('/house/deleteDefault/'+ houseId);
+        });
+
+        //房产中介
+        $(".createBroker").on("click",function () {
+            opt.openWin('/houseBroker/create?houseId=[[${house.id}]]','新增经纪人',630,300)
+        });
+        $(".editBroker").on("click",function () {
+            var id = $(this).attr("data-id");
+            opt.openWin('/houseBroker/edit/' + id,'修改经纪人',630,300);
+        });
+        $(".deleteBroker").on("click",function(){
+            var id = $(this).attr("data-id");
+            opt.confirm('/houseBroker/delete/[[${house.id}]]/'+id,'确定要删除经纪人吗？');
+        });
+
+        //房东
+        $(".createUser").on("click",function () {
+            opt.openWin('/houseUser/create?houseId=[[${house.id}]]','新增房东',630,430)
+        });
+        $(".editUser").on("click",function () {
+            var id = $(this).attr("data-id");
+            opt.openWin('/houseUser/edit/' + id,'修改房东',630,430);
+        });
+        $(".deleteUser").on("click",function(){
+            var id = $(this).attr("data-id");
+            opt.confirm('/houseUser/delete/[[${house.id}]]/'+id,'确定要删除房东吗');
+        });
+    });
+</script>
+
+
 </body>
 </html>

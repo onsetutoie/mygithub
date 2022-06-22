@@ -6,5 +6,6 @@ com\atguigu\util\IpUtil.class
 com\atguigu\util\CastUtil.class
 com\atguigu\result\ResultCodeEnum.class
 com\atguigu\base\BaseService.class
+com\atguigu\util\QiniuUtils.class
 com\atguigu\result\Result.class
 com\atguigu\util\MD5.class

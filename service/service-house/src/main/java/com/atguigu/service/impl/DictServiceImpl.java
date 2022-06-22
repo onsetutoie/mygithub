@@ -1,6 +1,8 @@
 package com.atguigu.service.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.atguigu.base.BaseDao;
 import com.atguigu.base.BaseServiceImpl;
 import com.atguigu.dao.DictDao;
@@ -9,11 +11,13 @@ import com.atguigu.service.DictService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Type;
+import java.util.*;
 
 @Service(interfaceClass = DictService.class)
 @Transactional
@@ -21,6 +25,9 @@ public class DictServiceImpl extends BaseServiceImpl<Dict> implements DictServic
 
     @Autowired
     DictDao dictDao;
+
+    @Autowired
+    JedisPool jedisPool;
 
     @Override
     public BaseDao<Dict> getEntityDao() {
@@ -52,7 +59,37 @@ public class DictServiceImpl extends BaseServiceImpl<Dict> implements DictServic
 
     @Override
     public List<Dict> findListByParentId(Long parentId) {
-        return dictDao.findByParentId(parentId);
+
+        Jedis jedis = null;
+
+        try {
+            String key = "shf:dict:parentId" + parentId;
+
+            //1.先从缓存中查询，如果有数据，直接返回，无需查询数据库
+            jedis = jedisPool.getResource();
+
+            String value = jedis.get(key);//存储时将List<Dict>转换为字符串存储的，获取得到的是字符串
+            if (!StringUtils.isEmpty(value)) {
+
+                Type listType = new TypeReference<List<Dict>>(){}.getType();
+                List<Dict> list = JSON.parseObject(value, listType);
+                System.out.println("------- redis ------  list = " + list);
+                return list;
+            }
+            List<Dict> list2 = dictDao.findByParentId(parentId);
+            if (!CollectionUtils.isEmpty(list2)) {
+                jedis.set(key, JSON.toJSONString(list2));
+                System.out.println("------- db ------  lis = " + list2);
+                return list2;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
+        return null;
     }
 
     @Override

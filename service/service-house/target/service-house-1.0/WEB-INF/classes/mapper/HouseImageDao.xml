@@ -23,13 +23,11 @@
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         insert into hse_house_image (
-           id ,
            house_id ,
            image_name ,
            image_url ,
            type
         ) values (
-           #{id} ,
            #{houseId} ,
            #{imageName} ,
            #{imageUrl} ,

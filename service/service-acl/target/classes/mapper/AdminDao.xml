@@ -58,6 +58,9 @@
         <if test="phone != null and phone != ''">
             phone = #{phone},
         </if>
+        <if test="headUrl != null and headUrl != ''">
+            head_url = #{headUrl},
+        </if>
         update_time = now()
         where id = #{id}
     </update>
@@ -67,4 +70,13 @@
         update acl_admin set is_deleted = 1
         where id = #{id}
     </delete>
+
+    <!--查询所有-->
+    <select id="findAll" resultType="Admin">
+        <include refid="column"/>
+        from acl_admin
+        where is_deleted = 0
+    </select>
+
+
 </mapper>

@@ -24,14 +24,12 @@
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         insert into hse_house_user (
-           id ,
            house_id ,
            name ,
            phone ,
            sex ,
            id_no
         ) values (
-           #{id} ,
            #{houseId} ,
            #{name} ,
            #{phone} ,
