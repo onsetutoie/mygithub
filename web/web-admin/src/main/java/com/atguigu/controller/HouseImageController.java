@@ -2,10 +2,8 @@ package com.atguigu.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.atguigu.base.BaseController;
-import com.atguigu.entity.House;
 import com.atguigu.entity.HouseImage;
 import com.atguigu.service.HouseImageService;
-import com.atguigu.service.HouseService;
 import com.atguigu.util.QiniuUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -51,6 +49,7 @@ public class HouseImageController extends BaseController {
                 houseImageService.insert(houseImage);
             }
         }
+
         return ACTION_LIST + houseId;
     }
 
