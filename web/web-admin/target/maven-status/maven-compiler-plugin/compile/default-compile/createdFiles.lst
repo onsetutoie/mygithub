@@ -1,0 +1,10 @@
+com\atguigu\controller\CommunityController.class
+com\atguigu\controller\HouseImageController.class
+com\atguigu\controller\DictController.class
+com\atguigu\aop\ControllerAspect.class
+com\atguigu\controller\HouseBrokerController.class
+com\atguigu\controller\HouseController.class
+com\atguigu\controller\AdminController.class
+com\atguigu\controller\HouseUserController.class
+com\atguigu\controller\RoleController.class
+com\atguigu\controller\IndexController.class
