@@ -23,7 +23,14 @@
     <div class="header">
         <div class="width1190">
             <div class="fl">您好，欢迎来到尚好房！</div>
-            <div class="fr">
+            <div class="fr" v-if="userInfo.nickName != ''">
+                欢迎{{userInfo.nickName}}|
+                <a href="follow.html">我的关注</a>
+                <a href="javascript:;">加入收藏</a> |
+                <a href="javascript:;">设为首页</a>
+                <a href="javascript:;" @click="logout()">退出</a> |
+            </div>
+            <div class="fr" v-else>
                 <a href="login.html">登录</a> |
                 <a href="register.html">注册</a> |
                 <a href="javascript:;">加入收藏</a> |
@@ -244,6 +251,9 @@ new Vue({
             priceSort: null,
             timeSort: null
         },
+        userInfo:{
+            nickName:""
+        },
         defaultSort: 1,
         priceSort: null,
         timeSort: null,
@@ -252,6 +262,7 @@ new Vue({
     created () {
         this.fetchDictData()
         this.fetchData(1)
+        this.login()
     },
 
     methods: {
@@ -290,6 +301,22 @@ new Vue({
             axios.post("/house/list/"+pageNum+"/"+this.page.pageSize,this.houseQueryVo).then(function (response) {
               that.page = response.data.data
             })
+        },
+        login(){
+           let userInfoString = window.localStorage.getItem("userInfo");
+            if (userInfoString != null && userInfoString != '') {
+                this.userInfo = JSON.parse(userInfoString)
+            }
+        },
+        logout(){
+            axios.get('/userInfo/logout').then(function (response) {
+                let userInfoString = window.localStorage.getItem("userInfo");
+                if (userInfoString != null && userInfoString != '') {
+                    window.localStorage.removeItem("userInfo");
+                    window.location.href = "login.html"
+                }
+            })
+
         },
         searchArea(id){
             // 进行条件查询，分页查询

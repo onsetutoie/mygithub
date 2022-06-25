@@ -24,7 +24,14 @@
  <div class="header">
   <div class="width1190">
    <div class="fl">您好，欢迎来到尚好房！</div>
-   <div class="fr">
+   <div class="fr" v-if="userInfo.nickName != ''">
+    欢迎{{userInfo.nickName}}|
+    <a href="follow.html">我的关注</a>
+    <a href="javascript:;">加入收藏</a> |
+    <a href="javascript:;">设为首页</a>
+    <a href="javascript:;" @click="logout()">退出</a> |
+   </div>
+   <div class="fr" v-else>
     <a href="login.html">登录</a> |
     <a href="register.html">注册</a> |
     <a href="javascript:;">加入收藏</a> |
@@ -76,62 +83,31 @@
      <div class="clearfix"></div>
     </ul><!--guanzhueq/-->
     <div class="guanzhulist">
-     <dl>
-      <dt><a href="proinfo.html"><img src="./static/images/fang1.jpg" width="190" height="128" /></a></dt>
+     <dl v-for="item in page.list" :key="item.id">
+      <dt><a href="'info.html?id='+item.houseId"><img :src=".item.defaultImageUrl" width="190" height="128" /></a></dt>
       <dd>
-       <h3><a href="proinfo.html">甘露园南里一区</a></h3>
-       <div class="guantext">100.00平 两室 高楼层 朝南</div>
-       <div class="guantext2">关注时间：2020-12-03 15:20:13    <a href="javascript:;" class="qxgz">取消关注</a></div>
+       <h3><a href="'info.html?id='+item.houseId">{{item.name}}</a></h3>
+       <div class="pro-wei">
+        <img src="/static/images/weizhi.png" width="12" height="16"/> <strong class="red">{{ item.communityName }}</strong>
+       </div>
+       <div class="guantext">{{ item.buildArea }}平 {{ item.houseTypeName}} {{ item.floorName}} {{ item.directionName}}</div>
+       <div class="guantext2">关注时间：{{ item.createTime}}    <a href="javascript:;" class="qxgz" @click="cancelFollow(item.id)">取消关注</a></div>
       </dd>
-      <div class="price">¥ <strong>3014</strong><span class="font12">万元</span></div>
-      <div class="clearfix"></div>
-     </dl>
-     <dl>
-      <dt><a href="proinfo.html"><img src="./static/images/fang1.jpg" width="190" height="128" /></a></dt>
-      <dd>
-       <h3><a href="proinfo.html">甘露园南里一区</a></h3>
-       <div class="guantext">100.00平 两室 高楼层 朝南</div>
-       <div class="guantext2">关注时间：2020-12-03 15:20:13    <a href="javascript:;" class="qxgz">取消关注</a></div>
-      </dd>
-      <div class="price">¥ <strong>3014</strong><span class="font12">万元</span></div>
+      <div class="price">¥ <strong>{{ item.totalPrice }}</strong><span class="font12">万元</span></div>
       <div class="clearfix"></div>
      </dl>
     </div><!--guanzhulist/-->
     <div class="clears"></div>
     <ul class="pages">
-     <!--<li>
-         <a href="#">首页</a>
-     </li>-->
-     <li>
-      <a href="#">上一页</a>
+      <li>
+       <a href="javascript:;" @click="fetchData(page.prePage)" v-if="page.hasPreviousPage">上一页</a>
+      </li>
+     <li v-for="item in page.navigatepageNums" :class="item == page.pageNum?'page_active':''">
+      <a href="javascript:;" @click="fetchData(item)">{{item}}</a>
      </li>
      <li>
-      <a href="#">1</a>
+      <a href="javascript:;" @click="fetchData(page.nextPage)" v-if="page.hasNextPage">下一页</a>
      </li>
-     <li class="page_active">
-      <a href="#">2</a>
-     </li>
-     <li>
-      <a href="#">3</a>
-     </li>
-     <li>
-      <a href="#">4</a>
-     </li>
-     <li>
-      <a href="#">5</a>
-     </li>
-     <li>
-      <span>...</span>
-     </li>
-     <li>
-      <a href="#">999</a>
-     </li>
-     <li>
-      <a href="#">下一页</a>
-     </li>
-     <!--<li>
-         <a href="#">尾页</a>
-     </li>-->
     </ul>
    </div><!--vip-right/-->
    <div class="clearfix"></div>
@@ -159,7 +135,71 @@
  <div class="bg100"></div>
 </div>
 <script>
- 
+ let vue = new Vue({
+  el:"#follow",
+  data:{
+   userInfo:{
+    nickName:""
+   },
+   //接口返回的分页数据，在此声明
+   page: {
+    list: [],
+    pageNum: 1,
+    pageSize: 2,
+    pages: 1,
+    navigatepageNums: [1,2,3,4],
+    prePage: 0,
+    nextPage: 0,
+    hasPreviousPage: false,
+    hasNextPage: false
+   },
+  },
+  created(){
+   this.login()
+   this.fetchData(1)
+
+  },
+  methods:{
+   login(){
+    let userInfoString = window.localStorage.getItem("userInfo");
+    if (userInfoString != null && userInfoString != '') {
+     this.userInfo = JSON.parse(userInfoString)
+    }
+   },
+   logout(){
+    axios.get('/userInfo/logout').then(function (response) {
+     let userInfoString = window.localStorage.getItem("userInfo");
+     if (userInfoString != null && userInfoString != '') {
+      window.localStorage.removeItem("userInfo");
+      window.location.href = "login.html"
+     }
+    })
+   },
+   fetchData(pageNum = 1){
+    if (pageNum<1) pageNum=1
+    if (pageNum >= this.pages) pageNum = this.pages
+    axios.get('/userFollow/auth/list/'+pageNum+'/'+this.page.pageSize).then(function (response) {
+     //如果没登录，拦截器会返回208状态，跳转登录页面
+     if (response.data.code ==200){
+      window.location.href = "login?originUrl="+window.location.href;
+     }else {
+      vue.page=response.data.data
+     }
+    })
+   },
+   cancelFollow(id){
+    axios.get('/userFollow/auth/cancelFollow/'+id).then(function (response) {
+     //如果没登录，拦截器会返回208状态，跳转登录页面
+     if (response.data.code == 208){
+      window.location.href = "login.html?originUrl="+window.location.href
+     }else{
+      vue.fetchData(1)
+     }
+    })
+   }
+
+  }
+ })
 </script>
 </body>
 </html>

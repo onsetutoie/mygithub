@@ -54,24 +54,25 @@
                     <form id="signupForm" method="post"  class="zcform">
                         <p class="clearfix">
                             <label class="one" for="agent">手机号码：</label>
-                            <input id="agent" type="text" class="required" value placeholder="请输入您的用户名"/>
+                            <input id="agent" type="text"  v-model="loginVo.phone"
+                                   class="required" value placeholder="请输入您的用户名"/>
                         </p>
                         <p class="clearfix">
-                            <span style="color: red;margin-left: 90px;">手机号码必须输入</span>
+                            <span style="color: red;margin-left: 90px;">{{valid.phone}}</span>
                         </p>
                         <p class="clearfix">
-                            <label class="one" for="password">登录密码：</label>
-                            <input id="password" type="password"
+                            <label class="one" for="password" >登录密码：</label>
+                            <input id="password" type="password"  v-model="loginVo.password"
                                    class="{required:true,rangelength:[8,20],}" value placeholder="请输入密码"/>
                         </p>
                         <p class="clearfix">
-                            <span style="color: red;margin-left: 90px;"></span>
+                            <span style="color: red;margin-left: 90px;">{{valid.password}}</span>
                         </p>
                         <!--<p class="clearfix agreement">
                             <input type="checkbox" />
                             <b class="left">已阅读并同意<a href="#">《用户协议》</a></b>
                         </p>-->
-                        <p class="clearfix"><input class="submit" type="button" value="立即登录"/></p>
+                        <p class="clearfix"><input class="submit" type="button" @click="submitLogin()" value="立即登录"/></p>
                     </form>
                     <div class="reg-logo-right">
                         <h3>如果您没有账号，请</h3>
@@ -104,7 +105,47 @@
         <div class="bg100"></div>
     </div>
     <script>
+        let vue = new Vue({
+            el:"#login",
+            data:{
+                loginVo:{
+                    phone:"13333456789",
+                    password:"123"
+                },
+                valid: {
+                    phone: '',
+                    password: ''
+                },
+            },
+            methods:{
+                submitLogin(){
+                    let isValid = true
+                    if(this.loginVo.phone==''){
+                        this.valid.phone = '手机号不能为空'
+                    }
+                    if(this.loginVo.password == ''){
+                        this.valid.password = '密码不能为空'
+                    }
+                    if (!isValid){
+                        return
+                    }
+                    axios.post('/userInfo/login',this.loginVo).then(function (response) {
+                        if (response.data.code == 200){
+                            window.localStorage.setItem("userInfo",JSON.stringify(response.data.data));
+                            let originUrl = util.getOriginUrl();
+                            if (originUrl!=""){
+                                window.location.href = originUrl;
+                            }else {
+                                window.location.href = "index.html";
+                            }
+                        }else {
+                            alert(response.data.message)
+                        }
+                    })
+                }
 
+            }
+        })
     </script>
     </body>
 </html>

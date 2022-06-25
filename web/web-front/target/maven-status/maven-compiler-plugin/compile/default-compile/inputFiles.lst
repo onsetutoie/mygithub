@@ -1,3 +1,5 @@
 D:\code\shf-parent\web\web-front\src\main\java\com\atguigu\controller\UserInfoController.java
 D:\code\shf-parent\web\web-front\src\main\java\com\atguigu\controller\DictController.java
 D:\code\shf-parent\web\web-front\src\main\java\com\atguigu\controller\HouseController.java
+D:\code\shf-parent\web\web-front\src\main\java\com\atguigu\controller\UserFollowController.java
+D:\code\shf-parent\web\web-front\src\main\java\com\atguigu\interceptor\LoginInterceptor.java
