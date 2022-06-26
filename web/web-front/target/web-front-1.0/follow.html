@@ -84,7 +84,7 @@
     </ul><!--guanzhueq/-->
     <div class="guanzhulist">
      <dl v-for="item in page.list" :key="item.id">
-      <dt><a href="'info.html?id='+item.houseId"><img :src=".item.defaultImageUrl" width="190" height="128" /></a></dt>
+      <dt><a href="'info.html?id='+item.houseId"><img :src="item.defaultImageUrl" width="190" height="128" /></a></dt>
       <dd>
        <h3><a href="'info.html?id='+item.houseId">{{item.name}}</a></h3>
        <div class="pro-wei">
@@ -155,9 +155,8 @@
    },
   },
   created(){
-   this.login()
    this.fetchData(1)
-
+   this.login()
   },
   methods:{
    login(){
@@ -170,17 +169,17 @@
     axios.get('/userInfo/logout').then(function (response) {
      let userInfoString = window.localStorage.getItem("userInfo");
      if (userInfoString != null && userInfoString != '') {
-      window.localStorage.removeItem("userInfo");
+      window.localStorage.setItem("userInfo","");
       window.location.href = "login.html"
      }
     })
    },
    fetchData(pageNum = 1){
-    if (pageNum<1) pageNum=1
+    if (pageNum < 1) pageNum=1
     if (pageNum >= this.pages) pageNum = this.pages
     axios.get('/userFollow/auth/list/'+pageNum+'/'+this.page.pageSize).then(function (response) {
      //如果没登录，拦截器会返回208状态，跳转登录页面
-     if (response.data.code ==200){
+     if (response.data.code ==208){
       window.location.href = "login?originUrl="+window.location.href;
      }else {
       vue.page=response.data.data

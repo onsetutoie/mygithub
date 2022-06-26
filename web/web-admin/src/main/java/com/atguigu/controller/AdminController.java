@@ -4,9 +4,9 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.atguigu.base.BaseController;
 import com.atguigu.entity.Admin;
 import com.atguigu.service.AdminService;
+import com.atguigu.service.RoleService;
 import com.atguigu.util.QiniuUtils;
 import com.github.pagehelper.PageInfo;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -27,9 +27,33 @@ public class AdminController extends BaseController {
     private static final String PAGE_EDIT = "admin/edit";
     private static final String LIST_ACTION = "redirect:/admin";
     private final static String PAGE_UPLOAD_SHOW = "admin/upload";
+    private static final String PAGE_ASSIGN_SHOW = "admin/assignShow";
 
     @Reference
     AdminService adminService;
+
+    @Reference
+    RoleService roleService;
+
+    //保存重新分配的角色
+    @PostMapping("/assignRole")
+    public String assignRole(Long adminId,Long[] roleIds,HttpServletRequest request){
+        roleService.saveAdminRoleRelationShip(adminId,roleIds);
+
+        return this.successPage(null,request);
+    }
+
+    //分配角色页面
+    @GetMapping("/assignShow/{adminId}")
+    public String assignShow(@PathVariable("adminId") Long adminId,Model model) {
+
+        Map<String,Object> roleMap = roleService.findRoleByAdminId(adminId);
+
+        model.addAllAttributes(roleMap);
+        model.addAttribute("adminId",adminId);
+
+        return PAGE_ASSIGN_SHOW;
+    }
 
     @PostMapping("/upload/{id}")
     public String upload(@PathVariable Long id, @RequestParam(value = "file") MultipartFile file, HttpServletRequest request) throws IOException {

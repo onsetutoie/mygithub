@@ -312,7 +312,7 @@ new Vue({
             axios.get('/userInfo/logout').then(function (response) {
                 let userInfoString = window.localStorage.getItem("userInfo");
                 if (userInfoString != null && userInfoString != '') {
-                    window.localStorage.removeItem("userInfo");
+                    window.localStorage.setItem("userInfo","");
                     window.location.href = "login.html"
                 }
             })
